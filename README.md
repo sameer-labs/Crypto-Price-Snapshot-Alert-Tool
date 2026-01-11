@@ -36,8 +36,3 @@ The goal is to demonstrate clean data collection, normalisation, and reporting u
    ```bash
    python crypto_price_monitor.py
 3. Output files will be saved in the output/ folder.
-
----
-
-   pip install requests
-
