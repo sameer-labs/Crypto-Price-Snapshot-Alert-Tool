@@ -1,0 +1,8 @@
+CRYPTO PRICE SUMMARY
+====================
+
+BITCOIN | $90,800.00 | 0.00%
+ETHEREUM | $3,108.93 | 0.00%
+SOLANA | $137.05 | 0.00%
+CARDANO | $0.39 | 0.00%
+DOGECOIN | $0.14 | 0.00%
