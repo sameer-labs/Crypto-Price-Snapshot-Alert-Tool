@@ -13,18 +13,14 @@ coins = [
     "cardano",
     "dogecoin"
 ]
-
 alert_rules = {
     "bitcoin": {"below": 40000, "above": 100000},
     "ethereum": {"below": 2000, "above": 5000}
 }
-
 data_dir = "data"
 output_dir = "output"
-
 os.makedirs(data_dir, exist_ok=True)
 os.makedirs(output_dir, exist_ok=True)
-
 csv_file = os.path.join(output_dir, "crypto_prices.csv")
 report_file = os.path.join(output_dir, "summary.txt")
 
@@ -38,20 +34,24 @@ def fetch_prices(coins):
     params = {
         "ids": ",".join(coins),
         "vs_currencies": "usd",
-        "include_24hr_change": "true"
-}
+        "include_24hr_change": "true"  
+    }
     
     response = requests.get(url, params=params)
     data = response.json()
+       
+    print("API Response:", data)
     
     results = []
     
     for coin in coins:
         if coin in data:
+            change_24hr = data[coin].get("usd_24h_change", 0)  #
+            
             results.append({
                 "coin": coin,
                 "price_usd": data[coin].get("usd", 0),
-                "change_24hr": data[coin].get("usd_24hr_change", 0)
+                "change_24hr": change_24hr
             })
     
     return results    
@@ -104,7 +104,7 @@ def write_summary(rows, alerts_triggered, filename):
             f.write(
                 f"{row['coin'].upper()} | "
                 f"${row['price_usd']:,.2f} | "
-                f"{row['change_24hr']:,.2f}%\n"
+                f"{row['change_24hr']:+.2f}%\n"
             )
             
         if alerts_triggered:
@@ -120,20 +120,18 @@ def write_summary(rows, alerts_triggered, filename):
 def main():
     prices = fetch_prices(coins)
     save_csv(prices, csv_file)
-
     alerts_triggered = check_alerts(prices, alert_rules)
     write_summary(prices, alerts_triggered, report_file)
-
     print("Done.")
     print(f"Saved: {csv_file}")
     print(f"Saved: {report_file}")
     
     if alerts_triggered:
-        print(f"\n {len(alerts_triggered)} alert(s) triggered:")
+        print(f"\n{len(alerts_triggered)} alert(s) triggered:")
         for alert in alerts_triggered:
-            print(f" {alert}")
+            print(f"  {alert}")
     else:
-        print("\n No alerts triggered")
+        print("\nNo alerts triggered")
 if __name__ == "__main__":
     main()
                
